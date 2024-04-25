@@ -1,10 +1,13 @@
 import React, { useCallback, useState } from "react";
 import Onboard, { WalletState } from "@web3-onboard/core";
+import injectedModule from '@web3-onboard/injected-wallets';
 
 import SendTransaction from "./SendTransaction";
 
+const injected = injectedModule()
+
 const onboard = Onboard({
-  wallets: [],
+  wallets: [injected],
   chains: [
     {
       id: "123456",
@@ -42,7 +45,7 @@ const Navigation: React.FC = () => {
             Transactions List
           </a>
         </div>
-        <div className="hs-collapse hidden overflow-hidden transition-all duration-300 basis-full grow sm:block">
+        <div className="hs-collapse overflow-hidden transition-all duration-300 basis-full grow sm:block">
           <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-end sm:mt-0 sm:pl-5">
             {wallet && (
               <>

@@ -6,8 +6,9 @@ import { navigate } from "./NaiveRouter";
 
 const TransactionList: React.FC = () => {
 
+  // Added no-cache so the list will be updated after each transaction
   const { loading, error, data } =
-    useQuery<TransactionsData>(GetAllTransactions);
+    useQuery<TransactionsData>(GetAllTransactions, {fetchPolicy: "no-cache"});
 
   const handleNavigate = (hash: string) => navigate(`/transaction/${hash}`);
 

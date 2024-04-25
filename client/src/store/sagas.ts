@@ -1,10 +1,11 @@
+import { PayloadAction } from "@reduxjs/toolkit";
 import { takeEvery } from "redux-saga/effects";
+import { navigate } from "../components/NaiveRouter";
 import {
   JsonRpcProvider,
   Transaction,
   TransactionResponse,
   TransactionReceipt,
-  BrowserProvider,
   Signer,
 } from "ethers";
 
@@ -12,25 +13,20 @@ import apolloClient from "../apollo/client";
 import { Actions } from "../types";
 import { SaveTransaction } from "../queries";
 
-function* sendTransaction() {
+function* sendTransaction(action: PayloadAction<any>) {
+
   const provider = new JsonRpcProvider("http://localhost:8545");
 
-  const walletProvider = new BrowserProvider(window.web3.currentProvider);
+  // I had some probelms to connect MetaMask with my local ganache, so just using it's provider here directly
+  // const walletProvider = new BrowserProvider(window.web3.currentProvider);
 
-  const signer: Signer = yield walletProvider.getSigner();
+  const signer: Signer = yield provider.getSigner();
 
-  const accounts: Array<{ address: string }> = yield provider.listAccounts();
-
-  const randomAddress = () => {
-    const min = 1;
-    const max = 19;
-    const random = Math.round(Math.random() * (max - min) + min);
-    return accounts[random].address;
-  };
-
+  // Just using all the fields from the form instead of picking random Account
   const transaction = {
-    to: randomAddress(),
-    value: 1000000000000000000,
+    from: action.payload.from,
+    to: action.payload.to,
+    value: action.payload.amount,
   };
 
   try {
@@ -57,6 +53,7 @@ function* sendTransaction() {
       mutation: SaveTransaction,
       variables,
     });
+    yield navigate(`/transaction/${receipt.hash}`)
   } catch (error) {
     //
   }

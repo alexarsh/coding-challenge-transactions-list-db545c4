@@ -1,20 +1,19 @@
-import React, { useCallback } from "react";
+import React from "react";
 import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
-
 import { Actions } from "../types";
 
 const SendTransaction: React.FC = () => {
   const dispatch = useDispatch();
-  const { handleSubmit } = useForm();
+  const { register, handleSubmit } = useForm();
 
-  const onSubmit = (data: any) => console.log(data);
-
-  const handleDispatch = useCallback(() => {
+  // Calling dispatch inside onSubmit, so we have access to the form data
+  const onSubmit = (data: any) => {
     dispatch({
       type: Actions.SendTransaction,
+      payload: data
     });
-  }, [dispatch]);
+  }
 
   return (
     <>
@@ -70,9 +69,9 @@ const SendTransaction: React.FC = () => {
                 <input
                   type="text"
                   id="input-sender"
-                  className="opacity-70 pointer-events-none py-3 px-4 block bg-gray-50 border-gray-800 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 w-full"
+                  className="opacity-70 py-3 px-4 block bg-gray-50 border-gray-800 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 w-full"
                   placeholder="Sender Address (Autocompleted)"
-                  disabled
+                  {...register("from")}
                 />
                 <label
                   htmlFor="input-recipient"
@@ -83,9 +82,9 @@ const SendTransaction: React.FC = () => {
                 <input
                   type="text"
                   id="input-recipient"
-                  className="opacity-70 pointer-events-none py-3 px-4 block bg-gray-50 border-gray-800 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 w-full"
+                  className="opacity-70 py-3 px-4 block bg-gray-50 border-gray-800 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 w-full"
                   placeholder="Recipient Address"
-                  disabled
+                  {...register("to")}
                 />
                 <label
                   htmlFor="input-amount"
@@ -96,9 +95,9 @@ const SendTransaction: React.FC = () => {
                 <input
                   type="number"
                   id="input-amount"
-                  className="opacity-70 pointer-events-none py-3 px-4 block bg-gray-50 border-gray-800 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 w-full"
+                  className="opacity-70 py-3 px-4 block bg-gray-50 border-gray-800 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 w-full"
                   placeholder="Amount"
-                  disabled
+                  {...register("amount")}
                 />
               </div>
               <div className="flex justify-end items-center gap-x-2 py-3 px-4 border-t">
@@ -110,8 +109,8 @@ const SendTransaction: React.FC = () => {
                   Close
                 </button>
                 <button
-                  type="button"
-                  onClick={handleDispatch}
+                  type="submit"
+                  data-hs-overlay="#hs-basic-modal"
                   className="py-3 px-4 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm"
                 >
                   Send
